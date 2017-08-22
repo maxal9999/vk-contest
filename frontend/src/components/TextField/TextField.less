@@ -1,0 +1,16 @@
+@import '../../index.less';
+
+.TextField {
+
+   &__input {
+      font-size: inherit;
+      border: none;
+      width: 100%;
+      border-bottom: 1px solid #ccc;
+
+      &:focus {
+         outline: none;
+         border-bottom: 1px solid @accent-theme-color;
+      }
+   }
+}

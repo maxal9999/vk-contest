@@ -1,0 +1,40 @@
+@import '../../index.less';
+
+.App {
+   display: flex;
+   flex-direction: column;
+   align-items: strench;
+   height: 100%;
+
+   &__head {
+      height: 65px;
+      background-color: @main-theme-color;
+      display: flex;
+      justify-content: space-between;
+   }
+   &__title {
+      font-size: 30px;
+      margin: auto 0 auto 16px;
+      color: #fff;
+   }
+   &__links {
+      display: flex;
+      margin: auto 16px auto 0;
+      color: #fff;
+      
+      a + a {
+         margin-left: 8px;
+      }
+      a:visited {
+         color: #fff;
+      }
+   }
+   &__body {
+      display: flex;
+      flex: 1 1 auto;
+
+      > * {
+         margin: 15vh auto 0 auto;
+      }
+   }
+}
