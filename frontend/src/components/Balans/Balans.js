@@ -47,6 +47,8 @@ class Balans extends Component {
             donateVisible: false,
             donateSum: 0.0
          });
+      } else {
+         this.props.showAlert('Укажите сумму платежа!');
       }
    }
 

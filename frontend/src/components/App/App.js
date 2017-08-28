@@ -15,6 +15,7 @@ import Signin from '../Signin/Signin';
 import OrdersTab from '../OrdersTab/OrdersTab';
 import HeadArea from '../HeadArea/HeadArea';
 import Balans from '../Balans/Balans';
+import ModalsManager from '../ModalsManager/ModalsManager';
 import './App.less';
 
 class App extends Component {
@@ -42,6 +43,7 @@ class App extends Component {
                   <div className='App__trobber'></div>
                ) : ''
             }
+            <ModalsManager />
          </div>
       );
    }

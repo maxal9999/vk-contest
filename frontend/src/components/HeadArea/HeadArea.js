@@ -37,10 +37,7 @@ class HeadArea extends Component {
                      caption='Выйти' />
                </div>
             ) : (
-               <div className='HeadArea__wrapper'>
-                  <Link className='HeadArea__link-signin'
-                     to='signin'>Войти</Link>
-               </div>
+               <div className='HeadArea__wrapper'></div>
             )}
          </div>
       );

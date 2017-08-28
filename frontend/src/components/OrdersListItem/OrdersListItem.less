@@ -1,26 +1,44 @@
+@import url('../../index.less');
+
 .OrdersListItem {
    display: flex;
    width: 70vw;
-   height: 60px;
-   margin-top: 5vmin;
+   height: 50px;
+   padding: 2vmin;
    align-items: center;
    cursor: pointer;
    font-size: 18px;
+   transition: transform .2s;
+   transform: translateX(0px);
 
-   &__date,
-   &__status {
-      width: 15vw;
+   &__date {
+      width: 10vw;
    }
    &__price {
-      width: 10vw;
+      flex-shrink: 0;
+      min-width: 10vw;
+      max-width: 15vw;
+   }
+   &__status {
+      width: 15vw;
    }
    &__title {
       width: 20vw;
    }
    &__descr {
       width: 40vw;
+      font-size: 16px;
    }
    &:hover {
-      background-color: #ccc;
+      transform: translateX(-15px);
+   }
+   &--waiting {
+      color: #ccc;
+   }
+   &--in-work {
+      color: @blue-color;
+   }
+   &--done {
+      color: @done-color;
    }
 }

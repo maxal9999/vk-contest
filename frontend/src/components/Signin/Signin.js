@@ -32,12 +32,21 @@ class Signin extends Component {
    handleSignin() {
       const login = this.state.login,
          pass = this.state.password;
-      if(login && pass) {
-         this.props.signIn({
-            login: login,
-            password: pass
-         });
+      let errMessage;
+      if(!login && !pass) {
+         errMessage = 'Укажите имя пользователя и пароль!';
+      } else if(!login) {
+         errMessage = 'Укажите имя пользователя!';
+      } else if(!pass) {
+         errMessage = 'Укажите пароль!';
       }
+      if(errMessage) {
+         return this.props.showAlert(errMessage);
+      }
+      this.props.signIn({
+         login: login,
+         password: pass
+      });
    }
 
    onChange(field, value) {
