@@ -10,6 +10,8 @@ import {
    connect
 } from 'react-redux';
 import OrdersList from '../OrdersList/OrdersList';
+import DateTransformer from '../../utils/DateTransformer';
+import * as actions from '../../actionsStore';
 import './OrdersTab.less';
 
 class OrdersTab extends Component {
@@ -23,6 +25,7 @@ class OrdersTab extends Component {
       return (
          <div className='OrdersTab'>
             <OrdersList
+               onClick={this.props.openOrder}
                ordersList={this.props.orders} />
              {!this.props.isAuth ? (<Redirect to='signin' />) : ''}
          </div>
@@ -37,18 +40,22 @@ const mapStateToProps = (state, ownProps) => {
          switch(raw.status) {
             case 0:
                raw.humanStatus = 'В ожидании';
+               raw.statusClass = 'OrdersListItem--waiting';
                break;
             case 1:
                raw.humanStatus = 'В работе';
+               raw.statusClass = 'OrdersListItem--in-work';
                break;
             case 2:
                raw.humanStatus = 'Завершен';
+               raw.statusClass = 'OrdersListItem--done';
                break;
          }
+         raw.humanLifeStart = DateTransformer(raw.lifeStart);
          return raw;
       }),
       isAuth: state.general.isAuth
    };
 };
 
-export default OrdersTab = connect(mapStateToProps)(OrdersTab);
+export default OrdersTab = connect(mapStateToProps, actions)(OrdersTab);

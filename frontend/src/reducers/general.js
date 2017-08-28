@@ -17,6 +17,7 @@ const logIn = (state, data) => {
    newState.isExecutor =  data.isExecutor;
    newState.nickname = data.nickname;
    newState.balans = data.balans;
+   newState.id = data.id;
    return newState;
 };
 

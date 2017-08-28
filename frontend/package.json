@@ -3,7 +3,9 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
-  "scripts": {},
+  "scripts": {
+    "build": "NODE_ENV='production' webpack"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com:Saionaro/vk-contest.git"
@@ -23,9 +25,11 @@
   },
   "homepage": "https://github.com/Saionaro/vk-contest#readme",
   "dependencies": {
+    "nanoid": "^0.2.0",
     "prop-types": "^15.5.10",
     "react": "^15.6.1",
     "react-dom": "^15.6.1",
+    "react-modal": "^2.2.4",
     "react-redux": "^5.0.6",
     "react-router-dom": "^4.1.2",
     "redux": "^3.7.2",

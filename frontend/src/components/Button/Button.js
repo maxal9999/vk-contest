@@ -2,10 +2,6 @@ import React, {
    Component
 } from 'react';
 import PropTypes from 'prop-types';
-import {
-   Link
-} from 'react-router-dom';
-import TextField from '../TextField/TextField';
 import './Button.less';
 
 export default class Button extends Component {

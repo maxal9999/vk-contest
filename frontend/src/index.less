@@ -1,5 +1,8 @@
 @main-theme-color: #3C3E4A;
 @accent-theme-color: #D0554E;
+@error-color: #ec3c3c;
+@blue-color: #1e76c3;
+@done-color: #008e14;
 
 body {
    margin: 0;
@@ -13,6 +16,18 @@ a {
 
       &:visited {
          color: @accent-theme-color;
+      }
+   }
+}
+
+.ReactModal {
+   &__Overlay {
+      background-color: initial !important;
+      display: flex;
+   }
+   &__Body--open {
+      & #app {
+         filter: blur(4px);
       }
    }
 }

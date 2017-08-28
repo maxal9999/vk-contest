@@ -1,0 +1,21 @@
+.ModalsManager {
+   &__modal {
+      border: 1px solid #bbb;
+      background-color: #fff;
+      overflow: auto;
+      border-radius: 4px;
+      outline: none;
+      padding: 16px;
+      margin: auto;
+      transform: scale(.6);
+      transition: transform .4s ease-in-out;
+      
+      &--blured {
+         transition: filter .3s;
+         filter: blur(4px);
+      }
+      &.ReactModal__Content--after-open {
+         transform: scale(1);
+      }
+   }
+}

@@ -34,17 +34,23 @@ class Signup extends Component {
       const login = this.state.login,
          pass = this.state.password,
          doublePas = this.state.passwordDouble;
-      if (
-         login &&
-         pass &&
-         doublePas &&
-         doublePas === pass
-      ) {
-         this.props.signUp({
-            login: this.state.login,
-            password: this.state.password
-         });
+      let errMessage;
+      if(!login && !pass) {
+         errMessage = 'Укажите имя пользователя и пароль!';
+      } else if(!login) {
+         errMessage = 'Укажите имя пользователя!';
+      } else if(!pass) {
+         errMessage = 'Укажите пароль!';
+      } else if(pass !== doublePas) {
+         errMessage = 'Введенные пароли не совпадают!';
       }
+      if(errMessage) {
+         return this.props.showAlert(errMessage);
+      }
+      this.props.signUp({
+         login: this.state.login,
+         password: this.state.password
+      });
    }
 
    onChange(field, value) {
