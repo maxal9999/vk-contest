@@ -4,7 +4,7 @@ module.exports = {
       'autoprefixer': {
          cascade: true,
          browsers: 'last 3 versions'
-      }
-      // ,'cssnano': {}
+      },
+      'cssnano': {}
    }
 };

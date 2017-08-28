@@ -31,7 +31,12 @@ module.exports = {
          filename: 'styles.css',
          allChunks: true
       }),
-      new Webpack.NoEmitOnErrorsPlugin()
+      new Webpack.NoEmitOnErrorsPlugin(),
+      new Webpack.DefinePlugin({
+         'process.env': {
+            'NODE_ENV': JSON.stringify(NODE_ENV)
+         }
+      })
    ],
    module: {
       rules: [{

@@ -29,12 +29,10 @@ export default class Button extends Component {
 
    render() {
       return (
-         <div className={this.compileClass()}>
-            <span
-               className='Button__caption'
-               onClick={::this.props.onClick}
-               title={this.props.caption}>{this.props.caption}</span>
-         </div>
+         <button
+            className={this.compileClass()}
+            onClick={::this.props.onClick}
+            title={this.props.caption}>{this.props.caption}</button>
       );
    }
 }

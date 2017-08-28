@@ -2,13 +2,23 @@
 
 .Button {
    cursor: pointer;
-   text-align: center;
-
-   &--primary {
-      color: @accent-theme-color;
-   }
+   border: none;
+   background-color: inherit;
+   font-size: inherit;
+   color: inherit;
+   padding: 0;
 
    &:hover {
       color: @accent-theme-color;
+   }
+   &:focus {
+      outline: none;
+   }
+   &--primary {
+      color: @accent-theme-color;
+
+      &:hover {
+         color: darken(@accent-theme-color, 20%);
+      }
    }
 }
