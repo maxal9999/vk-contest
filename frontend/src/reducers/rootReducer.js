@@ -1,8 +1,12 @@
 import {
    combineReducers
 } from 'redux';
-import task from './task';
+import order from './order';
+import user from './user';
+import general from './general';
 
 export default combineReducers({
-   task
+   order,
+   user,
+   general
 });

@@ -6,38 +6,51 @@ import {
    Link,
    Route
 } from 'react-router-dom';
+import {
+   connect
+} from 'react-redux';
 import PropTypes from 'prop-types';
 import Signup from '../Signup/Signup';
 import Signin from '../Signin/Signin';
+import OrdersTab from '../OrdersTab/OrdersTab';
+import HeadArea from '../HeadArea/HeadArea';
+import Balans from '../Balans/Balans';
 import './App.less';
 
 class App extends Component {
 
    static propTypes = {
-      activeTab: PropTypes.string
+      hasTrobber: PropTypes.bool
    }
 
    render() {
       return (
-         <div className={'App App--' + this.props.activeTab}>
+         <div className={'App' + (this.props.hasTrobber ? ' App--blur' : '')}>
             <div className='App__head'>
                <div className='App__title'>Биржа заказов</div>
-               <div className='App__links'>
-                  <Link className='App__link-signup'
-                     to='signup'>Зарегистрироваться</Link>
-                  <Link className='App__link-signin'
-                     to='signin'>Войти</Link>
-                  <Link className='App__link-logout'
-                     to='logout'>Выход</Link>
-               </div>
+               <HeadArea
+                  className='App__head-widget'
+                  isAuth={true} />
             </div>
             <div className='App__body'>
-               <Route path="/signup" component={Signup} />
-               <Route path="/signin" component={Signin} />
+               <Route path='/signin' component={Signin} />
+               <Route path='/signup' component={Signup} />
+               <Route path='/orders' component={OrdersTab} />
+               <Route path='/balans' component={Balans} />
             </div>
+            {this.props.hasTrobber ? (
+                  <div className='App__trobber'></div>
+               ) : ''
+            }
          </div>
       );
    }
 }
 
-export default App;
+const mapStateToProps = (state, selfPops) => {
+   return {
+      hasTrobber: state.general.hasTrobber
+   };
+};
+
+export default App = connect(mapStateToProps)(App);

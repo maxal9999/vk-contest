@@ -3,18 +3,47 @@ import React, {
 } from 'react';
 import PropTypes from 'prop-types';
 import {
-   Link
+   Link,
+   Redirect
 } from 'react-router-dom';
+import {
+   connect
+} from 'react-redux';
 import TextField from '../TextField/TextField';
+import * as actions from '../../actionsStore';
 import Button from '../Button/Button';
 import './Signin.less';
 
-export default class Signin extends Component {
+class Signin extends Component {
 
-   static propTypes = {};
+   static propTypes = {
+      isAuth: PropTypes.bool
+   };
+
+   state = {
+      login: '',
+      password: ''
+   };
+
+   componentWillMount() {
+      this.props.logOut();
+   }
 
    handleSignin() {
+      const login = this.state.login,
+         pass = this.state.password;
+      if(login && pass) {
+         this.props.signIn({
+            login: login,
+            password: pass
+         });
+      }
+   }
 
+   onChange(field, value) {
+      let state = {};
+      state[field] = value;
+      this.setState(state);
    }
 
    render() {
@@ -25,9 +54,11 @@ export default class Signin extends Component {
                <div className='Signin__form'>
                   <TextField
                      placeholder='Имя пользователя'
+                     onChange={this.onChange.bind(this, 'login')}
                      hasAutofocus={true} />
                   <TextField
                      placeholder='Пароль'
+                     onChange={this.onChange.bind(this, 'password')}
                      isPassword={true} />
                   <Button
                      caption='Войти'
@@ -38,7 +69,16 @@ export default class Signin extends Component {
                <Link className='Signin__switch'
                   to='signup'>У вас еще нет аккаунта?</Link>
             </div>
+            {this.props.isAuth ? (<Redirect to='orders' />) : ''}
          </div>
       );
    }
 }
+
+const mapStateToProps = (state, ownProps) => {
+   return {
+      isAuth: state.general.isAuth
+   };
+};
+
+export default Signin = connect(mapStateToProps, actions)(Signin);

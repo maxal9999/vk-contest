@@ -14,17 +14,17 @@ import {
    Route
 } from 'react-router-dom';
 import rootReducer from './reducers/rootReducer';
+import initializer from './utils/initializer';
 import App from './components/App/App';
 import './index.less';
 
-const store = createStore(rootReducer, {}, applyMiddleware(thunk));
+const store = createStore(rootReducer, initializer(), applyMiddleware(thunk));
 
 ReactDOM.render(
    <Provider store={ store }>
       <Router history={ createHistory() }>
          <Route path='/' component={App} />
       </Router>
-   </Provider>
-   ,
+   </Provider>,
    document.getElementById('app')
 );

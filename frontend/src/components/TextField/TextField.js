@@ -12,9 +12,10 @@ export default class TextField extends Component {
       onChange: PropTypes.func,
       onBlur: PropTypes.func,
       onChangeDelay: PropTypes.number,
-      text: PropTypes.string,
       isPassword: PropTypes.bool,
       hasAutofocus: PropTypes.bool,
+      maxLength: PropTypes.number,
+      onlyNumbers: PropTypes.bool,
       clearOnApply: PropTypes.bool,
       placeholder: PropTypes.string
    };
@@ -45,6 +46,16 @@ export default class TextField extends Component {
 
    handleChange = e => {
       const newText = e.target.value;
+      if(this.props.onlyNumbers) {
+         if(!/^[0-9]*$/.test(newText)) {
+            return;
+         }
+      }
+      if(this.props.maxLength) {
+         if(newText.length > this.props.maxLength) {
+            return;
+         }
+      }
       this.setState({
          text: newText
       });

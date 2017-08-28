@@ -1,0 +1,18 @@
+.HeadArea {
+
+   &__wrapper {
+      display: flex;
+      align-items: center;
+
+      > * + * {
+         margin-left: 14px;
+      }
+      a:visited {
+         color: #fff;
+      }
+   }
+   &__user-name,
+   &__link-logout {
+      text-decoration: none;
+   }
+}
