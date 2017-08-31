@@ -1,7 +1,7 @@
 let basicData = {
    general: {
       isAuth: false,
-      id: -1,
+      author_id: -1,
       nickname: '',
       balans: '0',
       hasTrobber: false
@@ -33,5 +33,11 @@ const getInitialData = function(basic) {
 
 export default function() {
    basicData.general = getInitialData(basicData.general);
+   if(basicData.general.author_id) {
+      basicData.user.store[basicData.general.author_id] = {
+         author_id: basicData.general.author_id,
+         login: basicData.general.nickname
+      };
+   }
    return basicData;
 };

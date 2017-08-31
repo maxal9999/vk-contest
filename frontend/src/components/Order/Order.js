@@ -23,7 +23,8 @@ class Order extends Component {
       status: PropTypes.number,
       humanLifeEnd: PropTypes.string,
       currentExecutor: PropTypes.bool,
-      currentAuthor: PropTypes.bool
+      currentAuthor: PropTypes.bool,
+      executorName: PropTypes.string
    };
 
    state = {
@@ -90,6 +91,14 @@ class Order extends Component {
       );
    }
 
+   _getExecutorLabel() {
+      if(this.props.status === 1) {
+         return 'В работе:';
+      } else {
+         return 'Выполнен:';
+      }
+   }
+
    renderBody() {
       return (
          this.props.isEditState ? (
@@ -108,6 +117,14 @@ class Order extends Component {
                      className='Order__comment'
                      onChange={this.onChange.bind(this, 'comment')}
                      placeholder='Комментарий' />
+               ) : ''}
+               {this.props.executorName ? (
+                  <div className='Order__executor-area'>
+                     <div className='Order__executor-label'
+                        title={this._getExecutorLabel()}>{this._getExecutorLabel()}</div>
+                     <div className='Order__executor-name'
+                        title={this.props.executorName}>{this.props.executorName}</div>
+                  </div>
                ) : ''}
                {this.props.comment ? (
                   <div className='Order__comment'
@@ -186,7 +203,8 @@ const mapStateToProps = (state, ownProps) => {
       isEditState: true,
       title: '',
       description: '',
-      price: ''
+      price: '',
+      executorName: ''
    };
    if(ownProps.id) {
       let currOrder = state.order.store[ownProps.id];
@@ -198,6 +216,12 @@ const mapStateToProps = (state, ownProps) => {
       data.currentExecutor = currOrder.executor_id === state.general.author_id;
       data.currentAuthor = currOrder.customer_id === state.general.author_id;
       data.comment = currOrder.comment_txt || '';
+      if (
+         currOrder.executor_id &&
+         state.user.store[currOrder.executor_id]
+      ) {
+         data.executorName = state.user.store[currOrder.executor_id].login;
+      }
       if(currOrder.end_date) {
          data.end_date = currOrder.end_date;
          data.humanLifeEnd = DateTransformer(data.end_date);

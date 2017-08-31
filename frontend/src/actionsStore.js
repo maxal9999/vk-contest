@@ -245,6 +245,12 @@ export function getOrdersList(filter) {
                hasNext: res.has_next
             }
          });
+         dispatch({
+            type: actionsLib.ADD_USERS,
+            data: {
+               list: res.users
+            }
+         });
       }).catch(err => {
          dispatch({
             type: actionsLib.OPEN_MODAL,
