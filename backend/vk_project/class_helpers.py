@@ -72,12 +72,12 @@ class Authorize(BaseClass):
         pass_txt = self._enter_json.get('password', None)
         password = uuid5(UUID_GENERATOR, pass_txt)
         if not login or not password:
-            return self.warning_res('Некорретные данные')
+            return self.warning_res('РќРµРєРѕСЂСЂРµРєС‚РЅС‹Рµ РґР°РЅРЅС‹Рµ')
         
         current_user = User.objects.filter(login__contains=login, 
                                            password__contains=password)
         if not current_user.exists():
-            return self.warning_res('Пользователь не найден')
+            return self.warning_res('РџРѕР»СЊР·РѕРІР°С‚РµР»СЊ РЅРµ РЅР°Р№РґРµРЅ')
         
         user_rec = current_user.values('purse', 'login', 'author_id')[0]
         author_token = AuthToken.objects.filter(author_id__contains=user_rec.get('author_id', None))
@@ -102,12 +102,12 @@ class Authorize(BaseClass):
         pass_txt = self._enter_json.get('password', None)
         password = uuid5(UUID_GENERATOR, pass_txt)
         if not login or not password:
-            return self.warning_res('Некорретные данные')
+            return self.warning_res('РќРµРєРѕСЂСЂРµРєС‚РЅС‹Рµ РґР°РЅРЅС‹Рµ')
             
         current_user = User.objects.filter(login__contains=login, 
                                            password__contains=password)
         if current_user.exists():
-            return self.warning_res('Пользователь с такими данными уже существует')
+            return self.warning_res('РџРѕР»СЊР·РѕРІР°С‚РµР»СЊ СЃ С‚Р°РєРёРјРё РґР°РЅРЅС‹РјРё СѓР¶Рµ СЃСѓС‰РµСЃС‚РІСѓРµС‚')
         
         new_user = User()
         new_user.login = login
@@ -191,7 +191,7 @@ class Orders(BaseClass):
         
         if not curr_balans > 0 or not price or \
                 Decimal(price) > Decimal(curr_balans):
-            return self.warning_res('Недостаточно средств на счете')
+            return self.warning_res('РќРµРґРѕСЃС‚Р°С‚РѕС‡РЅРѕ СЃСЂРµРґСЃС‚РІ РЅР° СЃС‡РµС‚Рµ')
         
         delta = Decimal(Decimal(curr_balans) - Decimal(price)*COMMISION_UP).quantize(Decimal('.01'), 
                                                                                      rounding=ROUND_DOWN)
@@ -239,12 +239,12 @@ class Orders(BaseClass):
             
         order_id = self._enter_json.get('id', None)
         if not order_id:
-            return self.warning_res('Некорректные данные')
+            return self.warning_res('РќРµРєРѕСЂСЂРµС‚РЅС‹Рµ РґР°РЅРЅС‹Рµ')
         
         order_id = UUID(order_id)
         order_exist = Order.objects.filter(order_id=order_id).using('orders')
         if not order_exist.exists():
-            return self.warning_res('Заказ не найден')
+            return self.warning_res('Р—Р°РєР°Р· РЅРµ РЅР°Р№РґРµРЅ')
         
         order_rec = Order.objects.using('orders').get(order_id=order_id)
         order_rec.order_id = order_id
@@ -273,12 +273,12 @@ class Orders(BaseClass):
         order_id = self._enter_json.get('id', None)
         comment = self._enter_json.get('comment', None)
         if not order_id:
-            return self.warning_res('Некорректные данные')
+            return self.warning_res('РќРµРєРѕСЂСЂРµС‚РЅС‹Рµ РґР°РЅРЅС‹Рµ')
         
         order_id = UUID(order_id)
         order_exist = Order.objects.filter(order_id=order_id).using('orders')
         if not order_exist.exists():
-            return self.warning_res('Заказ не найден')
+            return self.warning_res('Р—Р°РєР°Р· РЅРµ РЅР°Р№РґРµРЅ')
         
         order_rec = Order.objects.using('orders').get(order_id=order_id)
         order_rec.order_id = order_id
