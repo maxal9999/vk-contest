@@ -144,6 +144,8 @@ class Authorize(BaseClass):
         	return self.warning_res('Слишком большая сумма для вклада')
             
         user_rec.purse += delta
+        if user_rec.purse > MAX_SUM:
+        	user_rec.purse = MAX_SUM
         user_rec.save()
         return JsonResponse({'balans': str(user_rec.purse)})
     
@@ -338,11 +340,11 @@ class Orders(BaseClass):
         offset = COUNT * page
         limit = offset + COUNT
         if executor_id:
-            orders = Order.objects.filter(executor_id=executor_id).order_by('-start_date').using('orders')[offset:limit+1]
+            orders = Order.objects.filter(executor_id=executor_id).order_by('-create_date').using('orders')[offset:limit+1]
         elif customer_id:
-            orders = Order.objects.filter(customer_id=customer_id).order_by('-start_date').using('orders')[offset:limit+1]
+            orders = Order.objects.filter(customer_id=customer_id).order_by('-create_date').using('orders')[offset:limit+1]
         else:
-            orders = Order.objects.filter(status=0).exclude(customer_id=self._author_id).order_by('-start_date').using('orders')[offset:limit+1]
+            orders = Order.objects.filter(status=0).exclude(customer_id=self._author_id).order_by('-create_date').using('orders')[offset:limit+1]
         
         result_list = list(orders.values('order_id', 
                                          'customer_id', 
