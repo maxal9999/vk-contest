@@ -7,7 +7,7 @@ class User(models.Model):
     author_id = models.UUIDField(primary_key=True, 
                                  default=uuid.uuid4, 
                                  editable=False)
-    purse = models.DecimalField(max_digits=6, decimal_places=2)
+    purse = models.DecimalField(max_digits=8, decimal_places=2)
     status = models.BooleanField(default=False)
     login = models.CharField(max_length=200)
     password = models.CharField(max_length=200)
@@ -44,7 +44,7 @@ class Order(models.Model):
                                    default=uuid.uuid4, 
                                    editable=False)
     title = models.CharField(max_length=300, default='')
-    price = models.DecimalField(max_digits=6, decimal_places=2)
+    price = models.DecimalField(max_digits=8, decimal_places=2)
     status = models.PositiveSmallIntegerField()
     descr = models.CharField(max_length=1000, default='')
     comment_txt = models.CharField(max_length=500, default='')
