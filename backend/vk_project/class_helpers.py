@@ -8,6 +8,7 @@ import json
 from uuid import UUID, uuid4, uuid5
 import re
 from .constants import *
+from django.utils import timezone
 
 
 class BaseClass:
@@ -256,7 +257,7 @@ class Orders(BaseClass):
         
         order_rec = Order.objects.using('orders').get(order_id=order_id)
         order_rec.order_id = order_id
-        order_rec.executor_id = author_id
+        order_rec.executor_id = self._author_id
         order_rec.start_date = timezone.now()
         order_rec.status = 1
         order_rec.update()
