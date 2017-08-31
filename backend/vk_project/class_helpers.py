@@ -301,8 +301,8 @@ class Orders(BaseClass):
         user = User.objects.get(author_id=self._author_id)
         user.purse += Decimal(order_rec.price * COMMISION_DOWN).quantize(Decimal('.01'), 
                                                                          rounding=ROUND_DOWN)
-        if user_rec.purse > MAX_SUM:
-        	user_rec.purse = MAX_SUM
+        if user.purse > MAX_SUM:
+        	user.purse = MAX_SUM
         user.save()
         
         order_dict = {}
