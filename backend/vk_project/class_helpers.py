@@ -161,7 +161,7 @@ class Authorize(BaseClass):
 class Orders(BaseClass):
     
     @csrf_exempt
-    def order_new(request):
+    def order_new(self):
         res = {
                'order_id': '',
                'customer_id': '', 
@@ -176,7 +176,7 @@ class Orders(BaseClass):
                'end_date': '',
             }
         
-        if not request.method == "POST":
+        if not self._request.method == "POST":
             return JsonResponse(res)
         
         if not self._token_id or not self._author_id:
@@ -225,13 +225,13 @@ class Orders(BaseClass):
         return JsonResponse(res) 
 
     @csrf_exempt
-    def order_in_work(request):
+    def order_in_work(self):
         res = { 
                'executor_id': '', 
                'start_date': '', 
             }
         
-        if not request.method == "POST":
+        if not self._request.method == "POST":
             return JsonResponse(res)
         
         if not self._token_id or not self._author_id:
@@ -258,13 +258,13 @@ class Orders(BaseClass):
         return JsonResponse(res)
 
     @csrf_exempt
-    def order_done(request):
+    def order_done(self):
         res = { 
                'end_date': '', 
                'comment_txt': '', 
             }
         
-        if not request.method == "POST":
+        if not self._request.method == "POST":
             return JsonResponse(res)
         
         if not self._token_id or not self._author_id:
@@ -301,15 +301,15 @@ class Orders(BaseClass):
         return JsonResponse(res)
 
     @csrf_exempt
-    def order_list(request):
+    def order_list(self):
         res = {} 
-        if not request.method == "POST":
+        if not self._request.method == "POST":
             return JsonResponse(res)
         
         if not self._token_id or not self._author_id:
             return JsonResponse(res)
         
-        filter = enter_json.get('filter', None)
+        filter = self._enter_json.get('filter', None)
         if not filter:
             return JsonResponse(res)
         
