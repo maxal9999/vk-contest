@@ -1,59 +1,24 @@
 let basicData = {
    general: {
       isAuth: false,
-      id: 1,
-      isExecutor: false,
+      id: -1,
       nickname: '',
-      balans: 0,
+      balans: '0',
       hasTrobber: false
    },
    modal: {
       active: {}
    },
    order: {
-      store: {
-         1: {
-            id: 1,
-            client: 12,
-            lifeStart: new Date(),
-            title: 'Мой первый заказ',
-            descr: 'Он лучший самый и интересный',
-            price: 2500,
-            workStart: null,
-            lifeEnd: null,
-            executor: null,
-            status: 0
-         },
-         2: {
-            id: 2,
-            client: 123,
-            lifeStart: new Date(),
-            title: 'Мой второй заказ',
-            descr: 'Он похуже конечно, но тоже ничего',
-            price: 3500,
-            workStart: null,
-            lifeEnd: null,
-            executor: null,
-            status: 0
-         },
-         3: {
-            id: 3,
-            client: 23,
-            lifeStart: new Date(),
-            title: 'Еще заказец',
-            descr: 'Вообще ниочем, пусть где-то там валяется',
-            price: 500,
-            workStart: null,
-            lifeEnd: null,
-            executor: null,
-            status: 0
-         }
-      }
+      filter: 'all',
+      showList: [],
+      page: 0,
+      hasNext: false,
+      heedLoad: false,
+      store: {}
    },
    user: {
-      store: {
-
-      }
+      store: {}
    }
 };
 

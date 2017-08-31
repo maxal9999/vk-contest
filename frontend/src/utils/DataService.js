@@ -7,19 +7,19 @@ export default class DataService {
    }
 
    call(path, _params) {
-      if (process.env.NODE_ENV === 'production') {
-         let params = _params;
-         params.credentials = 'same-origin';
-         return fetch(`${this.endpoint}${path}`, params).then(res => {
-            if(res.ok) {
-               return res.json();
-            }
-            return Promise.reject(res.statusText);
-         });
-      } else {
-         return new Promise(res => {
-            setTimeout(res, 500);
-         });
-      }
+      let params = _params;
+      params.credentials = 'same-origin';
+      return fetch(`${this.endpoint}${path}`, params).then(res => {
+         if(res.ok) {
+            return res.json().then(data => {
+               if(data.error) {
+                  return Promise.reject(data.error);
+               } else {
+                  return data;
+               }
+            });
+         }
+         return Promise.reject(res.statusText);
+      });
    }
 }

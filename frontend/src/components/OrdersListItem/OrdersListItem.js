@@ -16,7 +16,7 @@ export default class OrdersListItem extends Component {
          <div className='OrdersListItem'
             onClick={() => this.props.onClick(this.props.data.id)}>
             <div className='OrdersListItem__date text--ellipsis'
-               title={this.props.data.lifeStart.toLocaleString()}>{this.props.data.humanLifeStart}</div>
+               title={this.props.data.create_date.toLocaleString()}>{this.props.data.humanLifeStart}</div>
             <div className={`OrdersListItem__status text--ellipsis ${this.props.data.statusClass}`}
                title={this.props.data.humanStatus}>{this.props.data.humanStatus}</div>
             <div className='OrdersListItem__title text--ellipsis'

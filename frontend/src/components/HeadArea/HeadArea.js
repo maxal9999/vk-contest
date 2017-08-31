@@ -18,7 +18,7 @@ class HeadArea extends Component {
    static propTypes = {
       isAuth: PropTypes.bool.isRequired,
       nickname: PropTypes.string,
-      balans: PropTypes.number
+      balans: PropTypes.string
    };
 
    render() {

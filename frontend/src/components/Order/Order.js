@@ -14,19 +14,23 @@ import './Order.less';
 class Order extends Component {
 
    static propTypes = {
-      id: PropTypes.number,
+      id: PropTypes.string,
       isEditState: PropTypes.bool,
       title: PropTypes.string,
       description: PropTypes.string,
-      price: PropTypes.number,
+      comment: PropTypes.string,
+      price: PropTypes.string,
       status: PropTypes.number,
-      humanLifeEnd: PropTypes.string
+      humanLifeEnd: PropTypes.string,
+      currentExecutor: PropTypes.bool,
+      currentAuthor: PropTypes.bool
    };
 
    state = {
       title: '',
       description: '',
-      price: ''
+      price: '',
+      comment: ''
    };
 
    onSendOrder() {
@@ -38,7 +42,7 @@ class Order extends Component {
          this.props.addOrder({
             title: this.state.title,
             descr: this.state.description,
-            price: +this.state.price
+            price: this.state.price
          });
          this.props.close();
       } else {
@@ -46,12 +50,11 @@ class Order extends Component {
       }
    }
 
-   onGetOrder() {
-      this.props.getOrderInWork.bind(this, this.props.id);
-   }
-
    onDoneOrder() {
-      this.props.doneOrder.bind(this, this.props.id);
+      this.props.doneOrder({
+         id: this.props.id,
+         comment: this.state.comment || ''
+      });
    }
 
    onChange(field, value) {
@@ -68,12 +71,12 @@ class Order extends Component {
                   className='Order__title Order__title--edit'
                   hasAutofocus={true}
                   onChange={this.onChange.bind(this, 'title')}
-                  placeholder='Загловок заказа' />
+                  placeholder='Заголовок заказа' />
                <TextField
                   className='Order__price Order__price--edit'
                   onChange={this.onChange.bind(this, 'price')}
                   onlyNumbers={true}
-                  maxLength={5}
+                  maxLength={8}
                   placeholder='Цена заказа' />
             </div>
          ) : (
@@ -95,40 +98,75 @@ class Order extends Component {
                   className='Order__description Order__description--edit'
                   onChange={this.onChange.bind(this, 'description')}
                   placeholder='Описание заказа' />
-               <Button
-                  className='Order__send-button'
-                  caption='Разместить'
-                  isPrimary={true}
-                  onClick={::this.onSendOrder} />
             </div>
          ) : (
             <div className='Order__body'>
                <div className='Order__description'
                   title={this.props.description}>{this.props.description}</div>
-               {this.props.status === 0 ? (
-                  <Button
-                     className='Order__get-button'
-                     caption='Взять в работу'
-                     isPrimary={true}
-                     onClick={this.props.getOrderInWork.bind(this, this.props.id)} />
-               ) : (
-                  this.props.status === 1 ? (
-                     <Button
-                        className='Order__done-button'
-                        caption='Завершить выполнение'
-                        isPrimary={true}
-                        onClick={this.props.doneOrder.bind(this, this.props.id)} />
-                  ) : (
-                     <div className='Order__done-area'>
-                        <div className='Order__done-caption'
-                           title='Заказ исполнен'>Заказ исполнен</div>
-                        <div className='Order__done-caption'
-                           title={this.props.lifeEnd.toLocaleString()}>{this.props.humanLifeEnd}</div>
-                     </div>
-                  )
-               )}
+               {this.props.currentExecutor && this.props.status === 1 ? (
+                  <TextField
+                     className='Order__comment'
+                     onChange={this.onChange.bind(this, 'comment')}
+                     placeholder='Комментарий' />
+               ) : ''}
+               {this.props.comment ? (
+                  <div className='Order__comment'
+                     title={this.props.comment}>
+                        <div className='Order__comment-caption'
+                           title='Комментарий исполнителя:'>Комментарий исполнителя:</div>
+                        <div className='Order__comment-value'
+                           title={this.props.comment}>{this.props.comment}</div>
+                  </div>
+               ) : ''}
             </div>
          )
+      );
+   }
+
+   renderButtons() {
+      let res;
+      if(this.props.isEditState) {
+         res = (
+            <Button
+               className='Order__send-button'
+               caption='Разместить'
+               isPrimary={true}
+               onClick={::this.onSendOrder} />
+         );
+      } else {
+         if (
+            this.props.status === 0 &&
+            !this.props.currentExecutor &&
+            !this.props.currentAuthor
+         ) {
+            res = (
+               <Button
+                  className='Order__get-button'
+                  caption='Взять в работу'
+                  isPrimary={true}
+                  onClick={this.props.getOrderInWork.bind(this, this.props.id)} />
+            );
+         } else if(this.props.status === 1 && this.props.currentExecutor) {
+            res = (
+               <Button
+                  className='Order__done-button Order--in-work'
+                  caption='Завершить выполнение'
+                  isPrimary={true}
+                  onClick={::this.onDoneOrder} />
+            );
+         } else if(this.props.status === 2) {
+            res = (
+               <div className='Order__done-area Order--done'>
+                  <div className='Order__done-caption'
+                     title='Заказ исполнен'>Заказ исполнен</div>
+                  <div className='Order__done-caption'
+                     title={this.props.end_date.toLocaleString()}>{this.props.humanLifeEnd}</div>
+               </div>
+            );
+         }
+      }
+      return (
+         <div className='Order__bottom-area'>{res}</div>
       );
    }
 
@@ -137,6 +175,7 @@ class Order extends Component {
          <div className='Order'>
             { this.renderHead() }
             { this.renderBody() }
+            { this.renderButtons() }
          </div>
       );
    }
@@ -150,14 +189,18 @@ const mapStateToProps = (state, ownProps) => {
       price: ''
    };
    if(ownProps.id) {
+      let currOrder = state.order.store[ownProps.id];
       data.isEditState = false;
-      data.title = state.order.store[ownProps.id].title;
-      data.description = state.order.store[ownProps.id].descr;
-      data.price = state.order.store[ownProps.id].price;
-      data.status = state.order.store[ownProps.id].status;
-      if(state.order.store[ownProps.id].lifeEnd) {
-         data.lifeEnd = state.order.store[ownProps.id].lifeEnd;
-         data.humanLifeEnd = DateTransformer(data.lifeEnd);
+      data.title = currOrder.title;
+      data.description = currOrder.descr;
+      data.price = currOrder.price;
+      data.status = currOrder.status;
+      data.currentExecutor = currOrder.executor_id === state.general.author_id;
+      data.currentAuthor = currOrder.customer_id === state.general.author_id;
+      data.comment = currOrder.comment_txt || '';
+      if(currOrder.end_date) {
+         data.end_date = currOrder.end_date;
+         data.humanLifeEnd = DateTransformer(data.end_date);
       }
    }
    return data;
