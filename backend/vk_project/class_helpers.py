@@ -137,6 +137,10 @@ class Authorize(BaseClass):
         delta = self._enter_json.get('delta', None)
         if not delta:
             return JsonResponse({'balans': str(curr_balans)})
+
+        int_delta = str(delta).split('.')[0]
+        if len(int_delta) > 6:
+        	return self.warning_res('Слишком большая сумма для вклада')
             
         user_rec.purse += delta
         user_rec.save()
@@ -192,6 +196,10 @@ class Orders(BaseClass):
         if not curr_balans > 0 or not price or \
                 Decimal(price) > Decimal(curr_balans):
             return self.warning_res('Недостаточно средств на счете')
+
+        int_price = str(price).split('.')[0]
+        if len(int_price) > 6:
+        	return self.warning_res('Слишком большая стоимость заказа')
         
         delta = Decimal(Decimal(curr_balans) - Decimal(price)*COMMISION_UP).quantize(Decimal('.01'), 
                                                                                      rounding=ROUND_DOWN)
@@ -319,7 +327,13 @@ class Orders(BaseClass):
         
         if page is None and not executor_id and not customer_id:
             return JsonResponse(res)
-        
+
+        if executor_id and not re.match(UUID_PATTERN, str(executor_id)):
+        	return JsonResponse(res)
+
+        if customer_id and not re.match(UUID_PATTERN, str(customer_id)):
+        	return JsonResponse(res)	
+
         offset = COUNT * page
         limit = offset + COUNT
         if executor_id:
