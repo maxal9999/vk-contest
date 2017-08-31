@@ -8,7 +8,9 @@
 </head>
 <body>
 <div id="app"></div>
-<script>window.initialData = { "nickname": '{{ nickname }}', "balans": {{ balans }}, "isExecutor": {{ isExecutor }} }</script>
+{% if token_id %}
+	<script>window.initialData = { "nickname": '{{ nickname }}', "balans": '{{ balans }}', "author_id": '{{ author_id }}', "token_id": '{{ token_id }}' }</script>
+{% endif %}
 <script src="{% static 'js/boundle.js' %}"></script>
 </body>
 </html>
