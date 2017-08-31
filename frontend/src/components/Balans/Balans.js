@@ -16,7 +16,7 @@ import './Balans.less';
 class Balans extends Component {
 
    static propTypes = {
-      sum: PropTypes.number,
+      sum: PropTypes.string,
       isAuth: PropTypes.bool
    };
 

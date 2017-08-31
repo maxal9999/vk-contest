@@ -26,7 +26,9 @@ class Signin extends Component {
    };
 
    componentWillMount() {
-      this.props.logOut();
+      if(this.props.isAuth) {
+         this.props.logOut();
+      }
    }
 
    handleSignin() {
