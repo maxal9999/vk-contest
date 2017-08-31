@@ -7,7 +7,6 @@ class User(models.Model):
     author_id = models.UUIDField(primary_key=True, 
                                  default=uuid.uuid4, 
                                  editable=False)
-    fio = models.CharField(max_length=300)
     purse = models.DecimalField(max_digits=6, decimal_places=2)
     status = models.BooleanField(default=False)
     login = models.CharField(max_length=200)
@@ -18,19 +17,47 @@ class User(models.Model):
         self.save()
 
     def __str__(self):
-        return self.fio
+        return self.login
+    
+    
+class AuthToken(models.Model):
+    author_id = models.UUIDField(primary_key=False, 
+                                 default=uuid.uuid4, 
+                                 editable=False)
+    token_id = models.UUIDField(primary_key=False, 
+                                 default=uuid.uuid4, 
+                                 editable=False)
+    def creation(self, author_id):
+        self.author_id = author_id
+        self.token_id = uuid.uuid4()
+        self.save()
     
 
 class Order(models.Model):
+    order_id = models.UUIDField(primary_key=True, 
+                                default=uuid.uuid4, 
+                                editable=False)
     customer_id = models.UUIDField(primary_key=False, 
                                    default=uuid.uuid4, 
                                    editable=False)
     executor_id = models.UUIDField(primary_key=False, 
                                    default=uuid.uuid4, 
                                    editable=False)
-    name = models.CharField(max_length=300)
-    cost = models.DecimalField(max_digits=6, decimal_places=2)
-    status = models.BooleanField(default=False)
+    title = models.CharField(max_length=300, default='')
+    price = models.DecimalField(max_digits=6, decimal_places=2)
+    status = models.PositiveSmallIntegerField()
+    descr = models.CharField(max_length=1000, default='')
+    comment_txt = models.CharField(max_length=500, default='')
+    create_date = models.DateTimeField(auto_now_add=True)
+    start_date = models.DateTimeField(default=timezone.now())
+    end_date = models.DateTimeField(default=timezone.now())
+    
+    def creation(self):
+        self.status = 0
+        self.save(using='orders')
+        
+    def update(self):
+        self.save(using='orders')
     
     def __str__(self):
-        return self.name
+        return self.title

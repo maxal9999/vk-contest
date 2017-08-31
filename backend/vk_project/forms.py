@@ -13,11 +13,11 @@ class Registration(forms.ModelForm):
 
     class Meta:
         model = User
-        fields = ('fio', 'status', 'login', 'password')
+        fields = ('login', 'password')
         
         
 class Order(forms.ModelForm):
 
     class Meta:
         model = Order
-        fields = ('name', 'cost', 'status')
+        fields = ('title', 'price', 'status')
