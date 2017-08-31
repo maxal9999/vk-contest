@@ -7,10 +7,7 @@ from decimal import *
 import json
 from uuid import UUID, uuid4, uuid5
 import re
-
-
-UUID_GENERATOR = UUID('e59a4b4e-f741-4a48-9c54-ab3e59a91a40')
-UUID_PATTERN = '^[0-9A-Fa-f]{8}\-[0-9A-Fa-f]{4}\-[0-9A-Fa-f]{4}\-[0-9A-Fa-f]{4}\-[0-9A-Fa-f]{12}$'
+from .constants import *
 
 
 class BaseClass:
@@ -40,6 +37,9 @@ class BaseClass:
             self._enter_json = json.loads(request.body.decode())
         except:
             self._enter_json = {}
+            
+    def warning_res(self, text):
+        return JsonResponse({'error': text})
             
     def author_id(self):
         return self._author_id
@@ -72,12 +72,12 @@ class Authorize(BaseClass):
         pass_txt = self._enter_json.get('password', None)
         password = uuid5(UUID_GENERATOR, pass_txt)
         if not login or not password:
-            raise Warning('Incorrect data')
+            return self.warning_res('Некорретные данные')
         
         current_user = User.objects.filter(login__contains=login, 
                                            password__contains=password)
         if not current_user.exists():
-            raise Warning('Login or password failed')
+            return self.warning_res('Пользователь не найден')
         
         user_rec = current_user.values('purse', 'login', 'author_id')[0]
         author_token = AuthToken.objects.filter(author_id__contains=user_rec.get('author_id', None))
@@ -102,12 +102,12 @@ class Authorize(BaseClass):
         pass_txt = self._enter_json.get('password', None)
         password = uuid5(UUID_GENERATOR, pass_txt)
         if not login or not password:
-            raise Warning('Incorrect data')
+            return self.warning_res('Некорретные данные')
             
         current_user = User.objects.filter(login__contains=login, 
                                            password__contains=password)
         if current_user.exists():
-            raise Warning('Login or password exists')
+            return self.warning_res('Пользователь с такими данными уже существует')
         
         new_user = User()
         new_user.login = login
@@ -142,7 +142,6 @@ class Authorize(BaseClass):
         user_rec.save()
         return JsonResponse({'balans': str(user_rec.purse)})
     
-    
     @csrf_exempt
     def signout(self):
         res = {}
@@ -156,4 +155,220 @@ class Authorize(BaseClass):
         if author_rec.exists():
             author_rec.delete()
             
+        return JsonResponse(res)
+    
+
+class Orders(BaseClass):
+    
+    @csrf_exempt
+    def order_new(request):
+        res = {
+               'order_id': '',
+               'customer_id': '', 
+               'executor_id': '', 
+               'title': '',       
+               'price': '',     
+               'status': '',     
+               'descr': '',
+               'comment_txt': '',
+               'create_date': '',
+               'start_date': '', 
+               'end_date': '',
+            }
+        
+        if not request.method == "POST":
+            return JsonResponse(res)
+        
+        if not self._token_id or not self._author_id:
+            return JsonResponse(res)
+        
+        user_rec = User.objects.get(author_id=self._author_id)
+        curr_balans = user_rec.purse or 0.00
+            
+        descr = self._enter_json.get('descr', None)
+        price = self._enter_json.get('price', None)
+        title = self._enter_json.get('title', None)
+        
+        if not curr_balans > 0 or not price or \
+                Decimal(price) > Decimal(curr_balans):
+            return self.warning_res('Недостаточно средств на счете')
+        
+        delta = Decimal(Decimal(curr_balans) - Decimal(price)*COMMISION_UP).quantize(Decimal('.01'), 
+                                                                                     rounding=ROUND_DOWN)
+        user_rec.purse = delta
+        user_rec.save()
+        
+        new_order = Order()
+        new_order.customer_id = user_rec.author_id
+        new_order.descr = descr
+        new_order.title = title
+        new_order.price = price
+        new_order.creation()
+        
+        res = {}
+        order_dict = {
+               'order_id': str(new_order.order_id),
+               'customer_id': str(new_order.customer_id), 
+               'executor_id': None, 
+               'title': new_order.title,       
+               'price': new_order.price,     
+               'status': new_order.status,     
+               'descr': new_order.descr,
+               'comment_txt': new_order.comment_txt,
+               'create_date': new_order.create_date,
+               'start_date': None, 
+               'end_date': None,
+            }
+        
+        res['order'] = order_dict
+        res['balans'] = str(delta)
+        return JsonResponse(res) 
+
+    @csrf_exempt
+    def order_in_work(request):
+        res = { 
+               'executor_id': '', 
+               'start_date': '', 
+            }
+        
+        if not request.method == "POST":
+            return JsonResponse(res)
+        
+        if not self._token_id or not self._author_id:
+            return JsonResponse(res)
+            
+        order_id = self._enter_json.get('id', None)
+        if not order_id:
+            return self.warning_res('Некорректные данные')
+        
+        order_id = UUID(order_id)
+        order_exist = Order.objects.filter(order_id=order_id).using('orders')
+        if not order_exist.exists():
+            return self.warning_res('Заказ не найден')
+        
+        order_rec = Order.objects.using('orders').get(order_id=order_id)
+        order_rec.order_id = order_id
+        order_rec.executor_id = author_id
+        order_rec.start_date = timezone.now()
+        order_rec.status = 1
+        order_rec.update()
+        
+        res['executor_id'] = str(order_rec.executor_id)
+        res['start_date'] = str(order_rec.start_date)
+        return JsonResponse(res)
+
+    @csrf_exempt
+    def order_done(request):
+        res = { 
+               'end_date': '', 
+               'comment_txt': '', 
+            }
+        
+        if not request.method == "POST":
+            return JsonResponse(res)
+        
+        if not self._token_id or not self._author_id:
+            return JsonResponse(res)
+        
+        order_id = self._enter_json.get('id', None)
+        comment = self._enter_json.get('comment', None)
+        if not order_id:
+            return self.warning_res('Некорректные данные')
+        
+        order_id = UUID(order_id)
+        order_exist = Order.objects.filter(order_id=order_id).using('orders')
+        if not order_exist.exists():
+            return self.warning_res('Заказ не найден')
+        
+        order_rec = Order.objects.using('orders').get(order_id=order_id)
+        order_rec.order_id = order_id
+        order_rec.comment_txt = comment
+        order_rec.end_date = timezone.now()
+        order_rec.status = 2
+        order_rec.update()
+        
+        user = User.objects.get(author_id=self._author_id)
+        user.purse += Decimal(order_rec.price * COMMISION_DOWN).quantize(Decimal('.01'), 
+                                                                         rounding=ROUND_DOWN)
+        user.save()
+        
+        order_dict = {}
+        order_dict['end_date'] = str(order_rec.end_date)
+        order_dict['comment_txt'] = str(order_rec.comment_txt)
+        res = {}
+        res['order'] = order_dict
+        res['balans'] = user.purse
+        return JsonResponse(res)
+
+    @csrf_exempt
+    def order_list(request):
+        res = {} 
+        if not request.method == "POST":
+            return JsonResponse(res)
+        
+        if not self._token_id or not self._author_id:
+            return JsonResponse(res)
+        
+        filter = enter_json.get('filter', None)
+        if not filter:
+            return JsonResponse(res)
+        
+        page = filter.get('page', None)
+        executor_id = filter.get('executor_id', None)
+        customer_id = filter.get('customer_id', None)
+        
+        if page is None and not executor_id and not customer_id:
+            return JsonResponse(res)
+        
+        offset = COUNT * page
+        limit = offset + COUNT
+        if executor_id:
+            orders = Order.objects.filter(executor_id=executor_id).order_by('-start_date').using('orders')[offset:limit+1]
+        elif customer_id:
+            orders = Order.objects.filter(customer_id=customer_id).order_by('-start_date').using('orders')[offset:limit+1]
+        else:
+            orders = Order.objects.filter(status=0).exclude(customer_id=self._author_id).order_by('-start_date').using('orders')[offset:limit+1]
+        
+        result_list = list(orders.values('order_id', 
+                                         'customer_id', 
+                                         'executor_id', 
+                                         'title', 
+                                         'price', 
+                                         'status', 
+                                         'descr', 
+                                         'comment_txt', 
+                                         'create_date', 
+                                         'start_date', 
+                                         'end_date'))
+        
+        user_list = set()
+        for res in result_list:
+            exec_id = res.get('executor_id', None)
+            if exec_id:
+                user_list.add(exec_id)
+            cust_id = res.get('customer_id', None)
+            if cust_id:
+                user_list.add(cust_id)
+            for elem, value in res.items():
+                if elem == 'status':
+                    continue
+                
+                res[elem] = str(value)
+        
+        def func(rec):
+            rec['author_id'] = str(rec.get('author_id', None) or '')
+            return rec
+        
+        users = []
+        if user_list:
+            users = list(User.objects.filter(author_id__in=list(user_list)).values('author_id', 'login'))
+            users = list(map(func, users))
+        
+        has_next = len(result_list) > COUNT
+        if has_next:
+            result_list.pop(COUNT)
+        res = {}
+        res['orders'] = result_list
+        res['users'] = users
+        res['has_next'] = has_next
         return JsonResponse(res)
