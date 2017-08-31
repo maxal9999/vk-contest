@@ -6,3 +6,4 @@ UUID_PATTERN = '^[0-9A-Fa-f]{8}\-[0-9A-Fa-f]{4}\-[0-9A-Fa-f]{4}\-[0-9A-Fa-f]{4}\
 COMMISION_UP = Decimal(1.05)
 COMMISION_DOWN = Decimal(0.95)
 COUNT = 10
+MAX_SUM = Decimal(999999)
