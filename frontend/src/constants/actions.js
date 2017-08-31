@@ -6,7 +6,7 @@ export const EXECUTE_ORDER = 'EXECUTE_ORDER';
 export const ACTIVATE_FILTER = 'ACTIVATE_FILTER';
 export const SET_SHOW_LIST = 'SET_SHOW_LIST';
 /* USERs */
-export const ADD_USER = 'ADD_USER';
+export const ADD_USERS = 'ADD_USERS';
 /* GENERALs */
 export const CHANGE_BALANS = 'CHANGE_BALANS';
 export const LOG_OUT = 'LOG_OUT';

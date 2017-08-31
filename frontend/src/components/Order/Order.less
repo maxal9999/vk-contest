@@ -2,7 +2,6 @@
 
 .Order {
    width: 60vw;
-   min-height: 20vh;
    max-height: 70vh;
    display: flex;
    flex-direction: column;
@@ -14,7 +13,7 @@
    }
    &__body {
       margin-top: 16px;
-      text-align: center;
+      text-align: right;
    }
    &__description {
       text-align: left;
@@ -35,8 +34,20 @@
    &__comment-caption {
       font-style: oblique;
    }
+   &__executor-area {
+      display: inline-flex;
+      text-align: right;
+      margin-top: 16px;
+   }
+   &__executor-name {
+      margin-left: 12px;
+   }
+   &__comment-value {
+      margin-top: 16px;
+   }
    &__done-area {
       display: flex;
+      margin-top: 16px;
    }
    &__done-caption {
       margin-left: 8px;

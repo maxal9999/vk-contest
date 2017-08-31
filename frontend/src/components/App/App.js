@@ -30,7 +30,9 @@ class App extends Component {
       return (
          <div className={'App' + (this.props.hasTrobber ? ' App--blur' : '')}>
             <div className='App__head'>
-               <div className='App__title'>Биржа заказов</div>
+               <div className='App__title'>
+                  <Link to='orders'>Биржа заказов</Link>
+               </div>
                <HeadArea
                   className='App__head-widget'
                   isAuth={true} />

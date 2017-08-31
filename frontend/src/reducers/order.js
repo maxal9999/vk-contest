@@ -9,6 +9,7 @@ import {
 const addOrder = (state, data) => {
    let newState = Object.assign({}, state),
       currentItem = {
+         id: data.order_id,
          order_id: data.order_id,
          customer_id: data.customer_id,
          create_date: serializeField('create_date', data.create_date),
@@ -22,6 +23,9 @@ const addOrder = (state, data) => {
          executor_id: null,
       };
    newState.store[data.order_id] = currentItem;
+   if(newState.filter === 'fromMe') {
+      newState.showList.unshift(data.order_id);
+   }
    return newState;
 };
 
