@@ -7,7 +7,7 @@ import {
 
 const changeBalans = (state, data) => {
    let newState = Object.assign({}, state);
-   newState.balans += data.delta;
+   newState.balans = data.balans;
    return newState;
 };
 
@@ -17,7 +17,7 @@ const logIn = (state, data) => {
    newState.isExecutor =  data.isExecutor;
    newState.nickname = data.nickname;
    newState.balans = data.balans;
-   newState.id = data.id;
+   newState.author_id = data.author_id;
    return newState;
 };
 

@@ -4,7 +4,8 @@ import {
 } from 'react';
 import {
    Link,
-   Route
+   Route,
+   Redirect
 } from 'react-router-dom';
 import {
    connect
@@ -21,7 +22,8 @@ import './App.less';
 class App extends Component {
 
    static propTypes = {
-      hasTrobber: PropTypes.bool
+      hasTrobber: PropTypes.bool,
+      isAuth: PropTypes.bool.isRequired
    }
 
    render() {
@@ -39,10 +41,12 @@ class App extends Component {
                <Route path='/orders' component={OrdersTab} />
                <Route path='/balans' component={Balans} />
             </div>
-            {this.props.hasTrobber ? (
+            {
+               this.props.hasTrobber ? (
                   <div className='App__trobber'></div>
                ) : ''
             }
+            {!this.props.isAuth ? (<Redirect to='signin' />) : (<Redirect to='orders' />)}
             <ModalsManager />
          </div>
       );
@@ -51,7 +55,8 @@ class App extends Component {
 
 const mapStateToProps = (state, selfPops) => {
    return {
-      hasTrobber: state.general.hasTrobber
+      hasTrobber: state.general.hasTrobber,
+      isAuth: state.general.isAuth
    };
 };
 
