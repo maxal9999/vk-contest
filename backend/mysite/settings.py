@@ -80,7 +80,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'mysql',
         'USER': 'service_user',
-        'PASSWORD': 'Warpt594',
+        'PASSWORD': '#####',
         'CONN_MAX_AGE': 180,
         'OPTIONS': {'charset': 'utf8mb4'},
     },
@@ -88,7 +88,7 @@ DATABASES = {
         'NAME': 'orders',
         'ENGINE': 'django.db.backends.mysql',
         'USER': 'service_user',
-        'PASSWORD': 'Warpt594',
+        'PASSWORD': '#####',
         'CONN_MAX_AGE': 180,
         'OPTIONS': {'charset': 'utf8mb4'},
     }
